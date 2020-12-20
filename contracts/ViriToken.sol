@@ -18,29 +18,59 @@ address indexed _to,
 uint256 _value
 );
 
+event Approval(
+    address indexed _owner,
+    address indexed _spender,
+    uint256 _value
+);
+
 mapping(address => uint256) public balanceOf;
+mapping(address => mapping(address => uint256)) public allowance;
 //constructor to initilize totalSupply of viriTokens
 
 constructor(uint256 _initialSupply) public {
- totalSupply=_initialSupply;
- //allocate initial supply to the admin account
- balanceOf[msg.sender] = _initialSupply;
+    totalSupply=_initialSupply;
+    //allocate initial supply to the admin account
+    balanceOf[msg.sender] = _initialSupply;
 }
 
 //Transfer ownership of token from sender account to given oaccount
 function transfer(address _to,uint256 _value) public returns(bool success){
+    //Exception, if sender account doesn't have enough tokens
+    require(balanceOf[msg.sender] >= _value,"Insufficint funds in the account and revert the transaction");
+    //Transfer tokens
+    balanceOf[msg.sender] -= _value;
+    balanceOf[_to] += _value;
+    //Trigger/emit transfer event
+    emit Transfer(msg.sender,_to,_value);
+    //return boolean
+    return true;
+}
 
-//Exception, if sender account doesn't have enough tokens
-require(balanceOf[msg.sender] >= _value,"Insufficint funds in the account and revert the transaction");
-//Transfer tokens
-balanceOf[msg.sender] -= _value;
-balanceOf[_to] += _value;
-//Trigger/emit transfer event
-emit Transfer(msg.sender,_to,_value);
+//approve
 
-//return boolean
+function approve(address _spender,uint256 _value) public returns(bool success){
+    allowance[msg.sender][_spender] = _value;
+    emit Approval(msg.sender,_spender,_value);
+    return true;
+}
 
-return true;
+//transferFrom
+
+function transferFrom(address _from,address _to,uint256 _value) public returns(bool success){
+    //Require _from has enough tokens
+    require(_value <= balanceOf[_from]);
+    //Require allowance is bigenough
+    require(_value <= allowance[_from][msg.sender]);
+    //Change the Balance
+    balanceOf[_from] -= _value;
+    balanceOf[_to] += _value;
+    //Update the allowance
+    allowance[_from][msg.sender] -= _value;
+    //Trigger Transferevent
+    emit Transfer(_from,_to,_value);
+    return true;
+
 }
 
 }
