@@ -127,13 +127,13 @@ it('handles delegated transfer', async() => {
       assert(reciept.logs[0].args._value,250000,'logs the transfer amount');
 
       const balanceOfFromAccount = await viriToken.balanceOf(fromAccount);
-      assert(balanceOfFromAccount.toNumber() === 90);
+      assert.equal(balanceOfFromAccount.toNumber(),90,'dedcucts correct amount from sending account')
       const balanceOfToAccount = await viriToken.balanceOf(toAccount);
       assert(balanceOfToAccount.toNumber() === 10);
+      assert.equal(balanceOfToAccount.toNumber(),10,'adds the amounts into receiving account')
 
       const allowance = await viriToken.allowance(fromAccount,spendingAccount);
-      assert.equal(allowance.toNumber() === 0 );
-
+      assert.equal(allowance.toNumber(),0,'allowance is correct');
 
 })
 });
