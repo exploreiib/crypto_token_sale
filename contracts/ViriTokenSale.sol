@@ -39,9 +39,14 @@ contract ViriTokenSale {
       
     }
 
-    function endSale() public {
+    function endOfSale() public {
         //Require admin
+        require(msg.sender == admin);
         //Transfer remaining viritokens to admin
+        require(tokenContract.transfer(admin,tokenContract.balanceOf(address(this))));
         //Destroy the token contract
+        //address payable addr = payable(admin);
+        address payable wallet = address(uint160(admin));
+        selfdestruct(wallet);
     }
 }

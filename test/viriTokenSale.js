@@ -64,6 +64,34 @@ contract('ViriTokenSale', function(accounts)  {
             assert(error.message.indexOf('revert') >=0,'cannot purchase more tokens than available');
         });
     });
+    
+    it('end token sale',function(){
+        return ViriToken.deployed().then(function(instance){
+            //Grab token instance first
+            tokenInstance=instance;
+            return ViriTokenSale.deployed();
+        }).then(function(instance){
+            //Grab token sale instance
+            tokenSaleInstance=instance;
+            //Try to end the sale from account other than admin
+            return tokenSaleInstance.endOfSale({from: buyer});
+        }).then(assert.fail).catch(function(error){
+            assert(error.message.indexOf('revert') >=0,'must be admin to end sale');
+            //End sale as admin
+            return tokenSaleInstance.endOfSale({from: admin});
+        }).then(function(receipt){
+            return tokenInstance.balanceOf(admin);
+        }).then(function(amount){
+           //console.log(amount);
+          assert.equal(amount.toNumber(),999990,'return all unsold tokens to admin');
+          //Check that token price was reset when selfDestruct was called
+          //return(tokenSaleInstance.tokenPrice());
+        //}).then(function(price){
+          //  console.log(price);
 
+            //assert.equal(price.toNumber(),0,'token price was reset ');
+        })
+        
+    })
 
 });
