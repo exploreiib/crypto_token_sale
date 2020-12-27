@@ -17,12 +17,11 @@
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
  *
  */
-
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const fs = require('fs');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const secrets = JSON.parse(fs.readFileSync(".secrets").toString().trim());
 
 module.exports = {
   /**
@@ -46,7 +45,19 @@ module.exports = {
       host: "127.0.0.1",     // Localhost (default: none)
       port: 7545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
-     }//,
+     },
+
+     ropsten: {
+       provider: () =>
+          new HDWalletProvider(
+            secrets.seed,
+            'https://ropsten.infura.io/v3/f20e8ba70fd14a30a5cf41cecfceb233'
+          ),
+          
+       network_id: 3,
+       skipDryRun: true       
+      }
+     
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port

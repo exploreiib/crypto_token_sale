@@ -1,0 +1,33 @@
+Steps followed to Deploy on Public Test Net (ropsten) & access token smart contract to assign 75% of token to token sale contract -
+
+--Setup for connecting ROPSTEN via INFURA API
+(1) Create free account in INFURA (https://infura.io/)
+(2) Login INFURA and Create sample project
+(3) Copy the ropsten test net URL from INFURA project to use in truffle-config.json file
+
+--Create ropsten test account and load with test ether
+(1) Open truffle develop console (truffle develop) and it displays the test accounts,private keys & mnemonic phrase
+(2) Pick the first account from the list and request for test ether using ropsten faucet link (https://faucet.dimensions.network/)
+(3) Step2 will deposit 5 test ether into provided account
+(4) Use meta mask to import (using private key of account) the account and add under ropsten network
+(5) make note of mnemonic displayed in truffle console to use in truffle-config.json file
+
+--Update truffle-config.json file to add ropsten network entry
+(1) Import truffle-hdwallet-provider in truffle-config.json
+(2) Create secrets file with below two entries and import in truffle-config.json
+           - seed = mnemonic phrase captured from truffle develop console
+           - projectId= Project Id captured from INFURA project   
+(3) Add network entry for ropsten in truffle-config.json
+
+-- Deploy smart contracts onto ropsten test n/w
+(1) open command prompt and issue migration command - truffle migrate --reset --network ropsten
+
+--How to transfer tokens to token sale contract account
+(1) open truffle console connecting to ropsten using command - truffle console --network ropsten --verbose-rpc
+(2) var admin = <USE ADMIN ACCOUNT>;
+(3) var tokensAvailable = 750000;
+(4) var tokenSaleAddress = <token_sale_address> (from token sale contract json file under ropsten network id);
+(5) var tokenAddress = <token address> (from token contract json file under ropsten network id);
+(6) var abi = <abi> (abi of ViriToken Contract);
+(7) var TokenContract = new web3.eth.Contract(abi, tokenAddress, {from: admin});
+(8) var result = await TokenContract.methods.transfer(tokenSaleAddress,tokensAvailable).send();
