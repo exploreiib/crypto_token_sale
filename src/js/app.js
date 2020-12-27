@@ -109,17 +109,12 @@ App = {
              return viriTokenInstance.balanceOf(App.account);
             }).then(function(balance){
              $(".dapp-balance").html(balance.toNumber());
+             App.loading = false;
+             loader.hide();
+             content.show(); 
             })
-        })
-        
-        //0xC02e23F8107a7927e82651b9e4ec4cdEfA1D1592
-        //0xC6D5c611EA20A0A2a863CEdDAD912461547E0c24
-        //0x756B278ac0FC2Da09cb42083AFBB2A261413fF3A
-
-        App.loading = false;
-        loader.hide();
-        content.show();      
-
+        });
+       
     },
 
     buyTokens: function(){
